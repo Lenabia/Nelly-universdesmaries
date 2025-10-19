@@ -197,4 +197,33 @@ document.addEventListener("DOMContentLoaded", () => {
         field.disabled = true;
       });
   }
+
+  /* ==========================================
+     6️⃣ Menu Burger
+  ========================================== */
+  const burger = document.querySelector(".burger");
+  const navMobile = document.querySelector(".nav-mobile");
+
+  if (burger && navMobile) {
+    burger.addEventListener("click", () => {
+      burger.classList.toggle("active");
+      navMobile.classList.toggle("active");
+    });
+
+    // Fermer le menu en cliquant sur un lien
+    navMobile.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        burger.classList.remove("active");
+        navMobile.classList.remove("active");
+      });
+    });
+
+    // Fermer le menu en cliquant à l'extérieur
+    document.addEventListener("click", (e) => {
+      if (!burger.contains(e.target) && !navMobile.contains(e.target)) {
+        burger.classList.remove("active");
+        navMobile.classList.remove("active");
+      }
+    });
+  }
 });

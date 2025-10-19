@@ -12,6 +12,9 @@ if (empty($_SESSION['csrf_token'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Univers des Mariés by NellyInsight - Planification de mariage et coaching personnalisé.">
   <title>Univers des Mariés by NellyInsight</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,7 +22,12 @@ if (empty($_SESSION['csrf_token'])) {
   <!-- 🧭 HEADER -->
   <header>
     <h1>Univers des Mariés by NellyInsight</h1>
-    <nav>
+    <button class="burger" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav-mobile">
       <ul>
         <li><a href="#accueil">Accueil</a></li>
         <li><a href="#apropos">À propos</a></li>
@@ -37,7 +45,7 @@ if (empty($_SESSION['csrf_token'])) {
     <div class="hero-content">
       <h2>Votre mariage, notre passion</h2>
       <p>Planifiez votre rêve avec nous</p>
-      <a href="#services" class="btn">View services</a>
+      <a href="#services" class="btn">Nos services</a>
     </div>
   </section>
 
@@ -45,7 +53,7 @@ if (empty($_SESSION['csrf_token'])) {
   <section id="apropos">
     <div class="about-container">
       <div class="about-text">
-        <h2>Votre expert mariage</h2>
+        <h3>Votre experte mariage</h3>
         <p class="about-intro">
           De la stratégie digitale à l'organisation émotionnelle… il n'y a eu qu'un pas — et je l'ai franchi.
         </p>
@@ -72,36 +80,36 @@ if (empty($_SESSION['csrf_token'])) {
         <p class="about-conclusion">
           Parce qu'un beau mariage, ce n'est pas que du beau — c'est surtout de la paix, de la clarté, et beaucoup de joie.
         </p>
-        <a href="#contact" class="btn">Get in touch</a>
+        <a href="#contact" class="btn">Contactez-moi</a>
       </div>
       <div class="about-image">
-        <img src="img/coordination.webp" alt="Nelly - Wedding Emotional Planner" class="about-img">
+        <img src="img/Elegance-Pictures-60.webp" alt="Nelly - Wedding Emotional Planner" class="about-img">
       </div>
     </div>
   </section>
 
   <!-- 💍 SERVICES -->
   <section id="services">
-    <h2>Nos services</h2>
+    <h3>Nos services</h3>
     <div class="services">
       <div class="service-card">
         <img src="img/book.webp" alt="Planification de mariage" class="service-icon">
-        <h3>Planification de mariage</h3>
+        <h4>Planification de mariage</h4>
         <p>Transformez vos rêves en réalité.</p>
       </div>
       <div class="service-card">
         <img src="img/coach.webp" alt="Coaching organisation mariage" class="service-icon">
-        <h3>Coaching organisation mariage</h3>
+        <h4>Coaching organisation mariage</h4>
         <p>Accompagnement personnalisé pour votre mariage.</p>
       </div>
       <div class="service-card">
         <img src="img/coordination.webp" alt="Coordination de mariage" class="service-icon">
-        <h3>Coordination de mariage</h3>
+        <h4>Coordination de mariage</h4>
         <p>Assistance le jour J pour une journée sans stress.</p>
       </div>
       <div class="service-card">
         <img src="img/ordi.webp" alt="Outils digitaux pour mariage" class="service-icon">
-        <h3>Outils digitaux pour mariage</h3>
+        <h4>Outils digitaux pour mariage</h4>
         <p>Des solutions innovantes pour votre planification.</p>
       </div>
     </div>
@@ -110,7 +118,7 @@ if (empty($_SESSION['csrf_token'])) {
 
   <!-- 📞 CONTACT -->
   <section id="contact">
-    <h2>Restez en contact</h2>
+    <h3>Restons en contact</h3>
     <p>Faites-nous part de vos projets 💌</p>
 
     <form action="save_contact.php" method="POST" novalidate role="form" aria-label="Formulaire de contact enrichi">
@@ -118,7 +126,7 @@ if (empty($_SESSION['csrf_token'])) {
 
       <!-- Informations personnelles -->
       <div class="form-section">
-        <h3>Vos informations</h3>
+        <h4>Vos informations</h4>
         
         <label for="name">Nom *</label>
         <input type="text" id="name" name="name" placeholder="Jane Smith" required maxlength="100" 
@@ -135,7 +143,7 @@ if (empty($_SESSION['csrf_token'])) {
 
       <!-- Informations sur le mariage -->
       <div class="form-section">
-        <h3>Votre projet de mariage</h3>
+        <h4>Votre projet de mariage</h4>
         
         <label for="motif">Motif de votre contact *</label>
         <select id="motif" name="motif" required aria-required="true" aria-describedby="motif-help">
@@ -169,7 +177,7 @@ if (empty($_SESSION['csrf_token'])) {
 
       <!-- Message libre -->
       <div class="form-section">
-        <h3>Votre message</h3>
+        <h4>Votre message</h4>
         <label for="message">Message libre</label>
         <textarea id="message" name="message" rows="5" placeholder="Décrivez vos rêves, vos questions, vos envies..." 
                   aria-describedby="message-help"></textarea>
@@ -187,14 +195,18 @@ if (empty($_SESSION['csrf_token'])) {
     </form>
 
     <div class="contact-details">
-      <p><strong>Email :</strong> <a href="mailto:nelly.moonlight9@gmail.com">nelly.moonlight9@gmail.com</a></p>
-      <p><strong>Localisation :</strong> Villemur-sur-Tarn, OCC FR</p>
-      <p><strong>Horaires :</strong></p>
-      <ul>
-        <li>Lundi–Vendredi : 9h00 – 22h00</li>
-        <li>Samedi : 9h00 – 18h00</li>
-        <li>Dimanche : 9h00 – 12h00</li>
-      </ul>
+      <div class="contact-item">
+        <span class="contact-icon">📍</span>
+        <span>France Métropolitaine</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">💬</span>
+        <span>Réponse sous 24h</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">✨</span>
+        <span>Accompagnement personnalisé</span>
+      </div>
     </div>
   </section>
 
