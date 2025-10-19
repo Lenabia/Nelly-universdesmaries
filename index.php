@@ -34,23 +34,50 @@ if (empty($_SESSION['csrf_token'])) {
     <div class="hero-image">
       <img src="img/coaching.webp" alt="Coaching et planification de mariage" class="hero-img">
     </div>
-    <h2>Votre mariage, notre passion</h2>
-    <p>Planifiez votre rêve avec nous</p>
-    <a href="#services" class="btn">View services</a>
+    <div class="hero-content">
+      <h2>Votre mariage, notre passion</h2>
+      <p>Planifiez votre rêve avec nous</p>
+      <a href="#services" class="btn">View services</a>
+    </div>
   </section>
 
   <!-- 💡 À PROPOS -->
   <section id="apropos">
-    <h2>Votre expert mariage</h2>
-    <p>
-      Planification et émotions réunies.<br>
-      Chez <strong>Univers des Mariés</strong>, nous transformons vos rêves en réalité grâce à notre expertise
-      en planification de mariage et en gestion de projets.
-    </p>
-    <p>
-      Notre approche unique combine des outils digitaux modernes et un coaching personnalisé pour vous accompagner tout au long de votre parcours. Ensemble, créons un mariage inoubliable qui reflète votre histoire d'amour !
-    </p>
-    <a href="#contact" class="btn">Get in touch</a>
+    <div class="about-container">
+      <div class="about-text">
+        <h2>Votre expert mariage</h2>
+        <p class="about-intro">
+          De la stratégie digitale à l'organisation émotionnelle… il n'y a eu qu'un pas — et je l'ai franchi.
+        </p>
+        <p>
+          J'ai évolué plusieurs années dans le monde du digital : d'abord commerciale, puis développeuse web, avant de devenir cheffe de projet IT.<br>
+          Autant te dire que gérer des deadlines, du stress et des prestataires, je connais !
+        </p>
+        <p>
+          <strong>Spoiler :</strong> c'est exactement ce qu'il faut pour organiser un mariage 😅<br>
+          Mais j'avais envie de plus de sens, plus d'humain, plus de magie.
+        </p>
+        <p>
+          Alors j'ai décidé de mettre mon expertise tech et ma rigueur de gestionnaire au service d'un jour unique : le tien.
+        </p>
+        <p>
+          <strong>Aujourd'hui, je suis Wedding Emotional Planner.<br>
+          Et mon job, c'est de te faire respirer.</strong>
+        </p>
+        <div class="about-highlights">
+          <p>💻 <strong>Mon parcours digital ?</strong> Il t'aide à tout structurer simplement, même sans aimer les tableaux Excel.</p>
+          <p>📋 <strong>Ma casquette cheffe de projet ?</strong> Elle sécurise chaque étape, pour que rien ne te dépasse.</p>
+          <p>🧘🏾‍♀️ <strong>Ma vision humaine ?</strong> Elle t'accompagne avec douceur, au bon rythme, sans pression.</p>
+        </div>
+        <p class="about-conclusion">
+          Parce qu'un beau mariage, ce n'est pas que du beau — c'est surtout de la paix, de la clarté, et beaucoup de joie.
+        </p>
+        <a href="#contact" class="btn">Get in touch</a>
+      </div>
+      <div class="about-image">
+        <img src="img/coordination.webp" alt="Nelly - Wedding Emotional Planner" class="about-img">
+      </div>
+    </div>
   </section>
 
   <!-- 💍 SERVICES -->
