@@ -45,20 +45,18 @@ if (!isset($_SESSION['logged_in']) ||
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Connexion Admin — Univers des Mariés</title>
         <link rel="stylesheet" href="../style.css">
-        <style>
-          body { text-align:center; padding-top:5rem; }
-          form { max-width:320px; margin:auto; }
-        </style>
     </head>
     <body>
-      <h2>🔐 Accès Administrateur</h2>
-      <?php if (!empty($error)): ?>
-        <p class="admin-error"><?= htmlspecialchars($error) ?></p>
-      <?php endif; ?>
-      <form method="POST" action="">
-        <input type="password" name="password" placeholder="Mot de passe admin" required>
-        <button type="submit">Se connecter</button>
-      </form>
+      <div class="admin-login">
+        <h2>🔐 Accès Administrateur</h2>
+        <?php if (!empty($error)): ?>
+          <p class="admin-error"><?= htmlspecialchars($error) ?></p>
+        <?php endif; ?>
+        <form method="POST" action="">
+          <input type="password" name="password" placeholder="Mot de passe admin" required>
+          <button type="submit">Se connecter</button>
+        </form>
+      </div>
     </body>
     </html>
     <?php
@@ -93,30 +91,28 @@ $messages = $stmt->fetchAll();
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <header>
-    <h1>Messages reçus 💌</h1>
-    <form method="POST" action="logout.php" class="admin-form-inline">
+  <header class="admin-header">
+    <h1 class="admin-title">Messages reçus 💌</h1>
+    <form method="POST" action="logout.php">
       <button type="submit" class="admin-logout">Déconnexion</button>
     </form>
   </header>
 
   <section>
     <?php if (empty($messages)): ?>
-      <p>Aucun message reçu pour le moment.</p>
+      <div class="admin-empty">
+        <p>Aucun message reçu pour le moment.</p>
+      </div>
     <?php else: ?>
-      <table class="admin-table">
+      <div class="admin-table-container">
+        <table class="admin-table">
         <thead>
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Téléphone</th>
-            <th>Motif</th>
             <th>Date Mariage</th>
-            <th>Invites</th>
-            <th>Lieu</th>
             <th>Priorité</th>
-            <th>Message</th>
-            <th>Date Envoi</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -124,45 +120,22 @@ $messages = $stmt->fetchAll();
             <tr>
               <td><?= htmlspecialchars($msg['nom']) ?></td>
               <td><?= htmlspecialchars($msg['email']) ?></td>
-              <td><?= htmlspecialchars($msg['telephone']) ?></td>
-              <td>
-                <?php
-                $motifs = [
-                  'planification_complete' => 'Planification complète',
-                  'coaching_specifique' => 'Coaching spécifique',
-                  'coordination_jour_j' => 'Coordination jour J',
-                  'outils_digitaux' => 'Outils digitaux',
-                  'consultation_personnalisee' => 'Consultation',
-                  'autre' => 'Autre (voir détails)'
-                ];
-                echo $motifs[$msg['motif_contact']] ?? $msg['motif_contact'];
-                ?>
-              </td>
               <td><?= $msg['date_mariage'] ? date('d/m/Y', strtotime($msg['date_mariage'])) : '-' ?></td>
-              <td><?= $msg['nombre_invites'] ?: '-' ?></td>
-              <td><?= htmlspecialchars($msg['lieu_mariage'] ?: '-') ?></td>
               <td>
                 <span class="priority-badge priority-<?= $msg['priorite'] ?>">
                   <?= ucfirst($msg['priorite']) ?>
                 </span>
               </td>
               <td>
-                <?php if ($msg['motif_contact'] === 'autre' && !empty($msg['message_autre'])): ?>
-                  <strong>Demande spécifique :</strong><br>
-                  <?= nl2br(htmlspecialchars($msg['message_autre'])) ?>
-                  <?php if (!empty($msg['message'])): ?>
-                    <br><br><strong>Message complémentaire :</strong><br>
-                    <?= nl2br(htmlspecialchars($msg['message'])) ?>
-                  <?php endif; ?>
-                <?php else: ?>
-                  <?= nl2br(htmlspecialchars($msg['message'] ?: '-')) ?>
-                <?php endif; ?>
+                <button class="btn btn-view" onclick="openModal(<?= htmlspecialchars(json_encode($msg)) ?>)">
+                  Voir
+                </button>
               </td>
-              <td><?= date('d/m/Y H:i', strtotime($msg['date_envoi'])) ?></td>
             </tr>
           <?php endforeach; ?>
         </tbody>
-      </table>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="pagination">
@@ -176,5 +149,69 @@ $messages = $stmt->fetchAll();
       </div>
     <?php endif; ?>
   </section>
+
+  <!-- Modal -->
+  <div id="messageModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 id="modalTitle">Message</h3>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    function openModal(msg) {
+      const modal = document.getElementById('messageModal');
+      const title = document.getElementById('modalTitle');
+      const body = document.getElementById('modalBody');
+      
+      title.textContent = `Message de ${msg.nom}`;
+      
+      const motifs = {
+        'planification_complete': 'Planification complète',
+        'coaching_specifique': 'Coaching spécifique',
+        'coordination_jour_j': 'Coordination jour J',
+        'outils_digitaux': 'Outils digitaux',
+        'consultation_personnalisee': 'Consultation',
+        'autre': 'Autre'
+      };
+      
+      body.innerHTML = `
+        <div class="message-details">
+          <p><strong>Email :</strong> ${msg.email}</p>
+          <p><strong>Téléphone :</strong> ${msg.telephone || '-'}</p>
+          <p><strong>Motif :</strong> ${motifs[msg.motif_contact] || msg.motif_contact}</p>
+          <p><strong>Date de mariage :</strong> ${msg.date_mariage ? new Date(msg.date_mariage).toLocaleDateString('fr-FR') : '-'}</p>
+          <p><strong>Nombre d'invités :</strong> ${msg.nombre_invites || '-'}</p>
+          <p><strong>Lieu :</strong> ${msg.lieu_mariage || '-'}</p>
+          <p><strong>Priorité :</strong> <span class="priority-badge priority-${msg.priorite}">${msg.priorite}</span></p>
+          <p><strong>Date d'envoi :</strong> ${new Date(msg.date_envoi).toLocaleString('fr-FR')}</p>
+          <hr>
+          <h4>Message :</h4>
+          ${msg.motif_contact === 'autre' && msg.message_autre ? 
+            `<p><strong>Demande spécifique :</strong><br>${msg.message_autre.replace(/\n/g, '<br>')}</p>` : 
+            ''
+          }
+          ${msg.message ? 
+            `<p><strong>Message complémentaire :</strong><br>${msg.message.replace(/\n/g, '<br>')}</p>` : 
+            '<p><em>Aucun message complémentaire</em></p>'
+          }
+        </div>
+      `;
+      
+      modal.style.display = 'block';
+    }
+    
+    function closeModal() {
+      document.getElementById('messageModal').style.display = 'none';
+    }
+    
+    // Fermer modal
+    document.querySelector('.close').onclick = closeModal;
+    window.onclick = function(event) {
+      const modal = document.getElementById('messageModal');
+      if (event.target === modal) closeModal();
+    }
+  </script>
 </body>
 </html>

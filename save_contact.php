@@ -170,14 +170,22 @@ try {
     $contactData = [
         'nom' => $name,
         'email' => $email,
+        'telephone' => $phone,
         'motif' => $motif,
         'date_mariage' => $date_mariage,
         'nombre_invites' => $nombre_invites,
         'lieu_mariage' => $lieu_mariage,
-        'message_autre' => $message_autre
+        'message_autre' => $message_autre,
+        'message' => $message,
+        'priorite' => $priorite
     ];
     
     $emailSent = sendAutomaticEmail($contactData);
+    
+    // Envoi de la notification à Nelly
+    if ($emailSent) {
+        sendNotificationToNelly($contactData);
+    }
     
     // Mise à jour du statut d'envoi d'email
     if ($emailSent) {

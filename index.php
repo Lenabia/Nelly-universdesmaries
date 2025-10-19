@@ -10,12 +10,21 @@ if (empty($_SESSION['csrf_token'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Univers des Mariés by NellyInsight - Planification de mariage et coaching personnalisé.">
-  <title>Univers des Mariés by NellyInsight</title>
+  <meta name="description" content="Univers des Mariés by NellyInsight - Wedding planner et organisateur de mariage en France. Planification personnalisée, coaching émotionnel et coordination jour J pour votre mariage de rêve.">
+  <title>Univers des Mariés | Wedding Planner France | NellyInsight</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID');
+  </script>
 </head>
 
 <body>
@@ -53,7 +62,7 @@ if (empty($_SESSION['csrf_token'])) {
   <section id="apropos">
     <div class="about-container">
       <div class="about-text">
-        <h3>Votre experte mariage</h3>
+        <h3>Votre experte wedding planner et organisatrice de mariage</h3>
         <p class="about-intro">
           De la stratégie digitale à l'organisation émotionnelle… il n'y a eu qu'un pas — et je l'ai franchi.
         </p>
@@ -74,7 +83,7 @@ if (empty($_SESSION['csrf_token'])) {
         </p>
         <div class="about-highlights">
           <p>💻 <strong>Mon parcours digital ?</strong> Il t'aide à tout structurer simplement, même sans aimer les tableaux Excel.</p>
-          <p>📋 <strong>Ma casquette cheffe de projet ?</strong> Elle sécurise chaque étape, pour que rien ne te dépasse.</p>
+          <p>📋 <strong>Ma casquette cheffe de projet ?</strong> Elle sécurise chaque étape de ton mariage, pour que rien ne te dépasse.</p>
           <p>🧘🏾‍♀️ <strong>Ma vision humaine ?</strong> Elle t'accompagne avec douceur, au bon rythme, sans pression.</p>
         </div>
         <p class="about-conclusion">
@@ -90,27 +99,27 @@ if (empty($_SESSION['csrf_token'])) {
 
   <!-- 💍 SERVICES -->
   <section id="services">
-    <h3>Nos services</h3>
+        <h3>Nos services de wedding planner</h3>
     <div class="services">
       <div class="service-card">
         <img src="img/book.webp" alt="Planification de mariage" class="service-icon">
-        <h4>Planification de mariage</h4>
-        <p>Transformez vos rêves en réalité.</p>
+        <h4>Planification de mariage complète</h4>
+        <p>Transformez vos rêves en réalité avec notre accompagnement de wedding planner personnalisé.</p>
       </div>
       <div class="service-card">
         <img src="img/coach.webp" alt="Coaching organisation mariage" class="service-icon">
         <h4>Coaching organisation mariage</h4>
-        <p>Accompagnement personnalisé pour votre mariage.</p>
+        <p>Accompagnement personnalisé et coaching émotionnel pour votre mariage.</p>
       </div>
       <div class="service-card">
         <img src="img/coordination.webp" alt="Coordination de mariage" class="service-icon">
-        <h4>Coordination de mariage</h4>
-        <p>Assistance le jour J pour une journée sans stress.</p>
+        <h4>Coordination de mariage jour J</h4>
+        <p>Coordination et assistance le jour J pour une journée sans stress.</p>
       </div>
       <div class="service-card">
         <img src="img/ordi.webp" alt="Outils digitaux pour mariage" class="service-icon">
         <h4>Outils digitaux pour mariage</h4>
-        <p>Des solutions innovantes pour votre planification.</p>
+        <p>Des solutions innovantes, des sites personnalisés et des outils digitaux pour votre mariage.</p>
       </div>
     </div>
   </section>
@@ -119,7 +128,7 @@ if (empty($_SESSION['csrf_token'])) {
   <!-- 📞 CONTACT -->
   <section id="contact">
     <h3>Restons en contact</h3>
-    <p>Faites-nous part de vos projets 💌</p>
+    <p>Faites-nous part de vos projets de mariage 💌</p>
 
     <form action="save_contact.php" method="POST" novalidate role="form" aria-label="Formulaire de contact enrichi">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
@@ -205,7 +214,7 @@ if (empty($_SESSION['csrf_token'])) {
       </div>
       <div class="contact-item">
         <span class="contact-icon">✨</span>
-        <span>Accompagnement personnalisé</span>
+        <span>Accompagnement wedding planner personnalisé</span>
       </div>
     </div>
   </section>

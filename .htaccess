@@ -1,0 +1,13 @@
+# Configuration des erreurs personnalisées
+ErrorDocument 404 /Universdesmaries/404.php
+
+# Sécurité - Empêcher l'accès aux fichiers sensibles
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Redirection HTTPS (pour la production)
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

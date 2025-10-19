@@ -13,6 +13,9 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     exit('Accès direct interdit.');
 }
 
+// ✅ Charger la configuration
+require_once __DIR__ . '/../config.php';
+
 require_once __DIR__ . '/phpmailer/src/Exception.php';
 require_once __DIR__ . '/phpmailer/src/PHPMailer.php';
 require_once __DIR__ . '/phpmailer/src/SMTP.php';
@@ -129,6 +132,130 @@ function getEmailStyles(): array
 }
 
 /**
+ * Envoie une notification à Nelly pour chaque nouvelle demande
+ */
+function sendNotificationToNelly(array $contactData): bool
+{
+    try {
+        $mail = new PHPMailer(true);
+        
+        // Configuration SMTP Gmail (même que pour les clients)
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = GMAIL_USERNAME;
+        $mail->Password   = GMAIL_APP_PASSWORD;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->CharSet    = 'UTF-8';
+        
+        // Expéditeur et destinataire
+        $mail->setFrom(GMAIL_USERNAME, 'Site Univers des Mariés');
+        $mail->addAddress(GMAIL_USERNAME, 'Nelly'); // Nelly reçoit la notification
+        $mail->addReplyTo($contactData['email'], $contactData['nom']); // Pour répondre directement
+        
+        // Contenu de la notification
+        $mail->isHTML(true);
+        $mail->Subject = '🔔 Nouvelle demande de contact - ' . $contactData['nom'];
+        $mail->Body    = generateNotificationBody($contactData);
+        $mail->AltBody = generateNotificationAltBody($contactData);
+        
+        $mail->send();
+        return true;
+        
+    } catch (Exception $e) {
+        error_log('Erreur envoi notification Nelly : ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Génère le contenu HTML de la notification
+ */
+function generateNotificationBody(array $data): string
+{
+    $styles = getEmailStyles();
+    $motifs = [
+        'planification_complete' => 'Planification complète (A à Z)',
+        'coaching_specifique' => 'Coaching organisationnel (points spécifiques)',
+        'coordination_jour_j' => 'Coordination jour J uniquement',
+        'outils_digitaux' => 'Outils digitaux (planning, invitations, etc.)',
+        'consultation_personnalisee' => 'Consultation personnalisée',
+        'autre' => 'Autre (voir détails)'
+    ];
+    
+    $motifLibelle = $motifs[$data['motif']] ?? $data['motif'];
+    $priorite = $data['priorite'] ?? 'normal';
+    $prioriteColor = $priorite === 'urgent' ? '#f54940' : ($priorite === 'normal' ? '#f5ad98' : '#a6b6a3');
+    
+    return '
+    <div style="' . $styles['container'] . '">
+        <h2 style="' . $styles['title'] . '">🔔 Nouvelle demande de contact</h2>
+        
+        <div style="' . $styles['highlight_box'] . '">
+            <h3 style="' . $styles['highlight_title'] . '">👤 Informations personnelles</h3>
+            <p><strong>Nom :</strong> ' . htmlspecialchars($data['nom']) . '</p>
+            <p><strong>Email :</strong> <a href="mailto:' . htmlspecialchars($data['email']) . '">' . htmlspecialchars($data['email']) . '</a></p>
+            <p><strong>Téléphone :</strong> ' . htmlspecialchars($data['telephone'] ?? '-') . '</p>
+        </div>
+        
+        <div style="' . $styles['highlight_box'] . '">
+            <h3 style="' . $styles['highlight_title'] . '">💍 Détails du mariage</h3>
+            <p><strong>Motif :</strong> ' . htmlspecialchars($motifLibelle) . '</p>
+            <p><strong>Date de mariage :</strong> ' . htmlspecialchars($data['date_mariage']) . '</p>
+            <p><strong>Nombre d\'invités :</strong> ' . ($data['nombre_invites'] ? htmlspecialchars((string)$data['nombre_invites']) . ' personnes' : 'Non précisé') . '</p>
+            <p><strong>Lieu :</strong> ' . htmlspecialchars($data['lieu_mariage'] ?: 'Non précisé') . '</p>
+            <p><strong>Priorité :</strong> <span style="color: ' . $prioriteColor . '; font-weight: bold;">' . strtoupper($priorite) . '</span></p>
+        </div>
+        
+        <div style="' . $styles['highlight_box'] . '">
+            <h3 style="' . $styles['highlight_title'] . '">💬 Message</h3>
+            ' . ($data['message_autre'] ? '<p><strong>Demande spécifique :</strong><br>' . nl2br(htmlspecialchars($data['message_autre'])) . '</p>' : '') . '
+            ' . ($data['message'] ? '<p><strong>Message complémentaire :</strong><br>' . nl2br(htmlspecialchars($data['message'])) . '</p>' : '<p><em>Aucun message complémentaire</em></p>') . '
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f7f6; border-radius: 10px;">
+            <p><strong>📧 Pour répondre :</strong> Cliquez sur "Répondre" dans votre client email</p>
+            <p><strong>⏰ Temps de réponse recommandé :</strong> ' . ($priorite === 'urgent' ? 'Sous 2h' : 'Sous 24h') . '</p>
+        </div>
+    </div>';
+}
+
+/**
+ * Génère la version texte de la notification
+ */
+function generateNotificationAltBody(array $data): string
+{
+    $motifs = [
+        'planification_complete' => 'Planification complète (A à Z)',
+        'coaching_specifique' => 'Coaching organisationnel (points spécifiques)',
+        'coordination_jour_j' => 'Coordination jour J uniquement',
+        'outils_digitaux' => 'Outils digitaux (planning, invitations, etc.)',
+        'consultation_personnalisee' => 'Consultation personnalisée',
+        'autre' => 'Autre (voir détails)'
+    ];
+    
+    $motifLibelle = $motifs[$data['motif']] ?? $data['motif'];
+    $priorite = $data['priorite'] ?? 'normal';
+    
+    return "NOUVELLE DEMANDE DE CONTACT\n\n" .
+           "INFORMATIONS PERSONNELLES\n" .
+           "Nom: " . $data['nom'] . "\n" .
+           "Email: " . $data['email'] . "\n" .
+           "Téléphone: " . ($data['telephone'] ?? '-') . "\n\n" .
+           "DÉTAILS DU MARIAGE\n" .
+           "Motif: " . $motifLibelle . "\n" .
+           "Date de mariage: " . $data['date_mariage'] . "\n" .
+           "Nombre d'invités: " . ($data['nombre_invites'] ? (string)$data['nombre_invites'] . ' personnes' : 'Non précisé') . "\n" .
+           "Lieu: " . ($data['lieu_mariage'] ?: 'Non précisé') . "\n" .
+           "Priorité: " . strtoupper($priorite) . "\n\n" .
+           "MESSAGE\n" .
+           ($data['message_autre'] ? "Demande spécifique: " . $data['message_autre'] . "\n" : '') .
+           ($data['message'] ? "Message complémentaire: " . $data['message'] . "\n" : "Aucun message complémentaire\n") .
+           "\nPour répondre: Utilisez la fonction 'Répondre' de votre client email";
+}
+
+/**
  * Génère le corps HTML de l'email
  */
 function generateEmailBody(string $template, array $data): string
@@ -173,7 +300,7 @@ function generateEmailBody(string $template, array $data): string
                 <div style="' . $styles['highlight_box'] . '">
                     <h3 style="' . $styles['highlight_title'] . '">Je vous propose :</h3>
                     <ul>
-                        <li>📞 Un appel de 30min pour cerner vos besoins précis</li>
+                        <li>📞 Je vous contacte dans les 24h pour cerner vos besoins précis</li>
                         <li>💡 Des conseils personnalisés et pratiques</li>
                         <li>📋 Un plan d\'action détaillé</li>
                         <li>📅 Un suivi jusqu\'au jour J si nécessaire</li>
@@ -208,6 +335,8 @@ function generateEmailBody(string $template, array $data): string
                 
                 <p>Laissez-moi gérer tous les détails techniques pour que vous puissiez savourer chaque instant !</p>
                 
+                <p>📞 <strong>Je vous contacte dans les 24h pour rendre connaissance de vos besoins</strong> et planifier ensemble tous les détails du jour J.</p>
+                
                 <p>À très bientôt !<br>
                 <strong>Nelly</strong><br>
                 Univers des Mariés by NellyInsight</p>
@@ -235,6 +364,8 @@ function generateEmailBody(string $template, array $data): string
                 
                 <p>Des outils qui vous feront gagner du temps et vous permettront de vous concentrer sur l\'essentiel !</p>
                 
+                <p>📞 <strong>Je vous contacte dans les 24h pour rendre connaissance de vos besoins</strong> et définir ensemble vos outils digitaux personnalisés.</p>
+                
                 <p>À très bientôt !<br>
                 <strong>Nelly</strong><br>
                 Univers des Mariés by NellyInsight</p>
@@ -248,16 +379,7 @@ function generateEmailBody(string $template, array $data): string
                 
                 <p>Chaque mariage est unique, et c\'est pourquoi cette consultation sera entièrement adaptée à vos envies et à votre vision. Un moment privilégié pour échanger et vous conseiller au mieux !</p>
                 
-                <div style="' . $styles['highlight_box'] . '">
-                    <h3 style="' . $styles['highlight_title'] . '">Cette consultation inclut :</h3>
-                    <ul>
-                        <li>💬 Échange sur vos envies et priorités</li>
-                        <li>🎯 Définition de votre vision du mariage</li>
-                        <li>💡 Conseils personnalisés et pratiques</li>
-                        <li>📋 Recommandations adaptées à votre projet</li>
-                        <li>❓ Réponses à toutes vos questions</li>
-                    </ul>
-                </div>
+                <p>📞 <strong>Je vous contacte dans les 24h pour rendre connaissance de vos besoins</strong> et planifier ensemble votre consultation personnalisée.</p>
                 
                 <p>Je suis là pour vous accompagner et vous aider à clarifier vos idées !</p>
                 
